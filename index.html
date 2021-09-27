@@ -18,6 +18,11 @@
         font-family: Arial, Helvetica, sans-serif;
     }
 
+    #tracker-code-input {
+      font-size: 2rem;
+      width: 5em;
+    }
+
     .page-header {
         width: 100%;
         height: 70px;
@@ -188,6 +193,11 @@
       color: #fff;
     }
 
+    .modal__btn-secondary {
+      background-color: hsl(359, 100%, 31%);
+      color: #fff;
+    }
+
 
 
     /**************************\
@@ -246,9 +256,9 @@
   <header class="page-header">
     <h1 class="logo">Ward Walk</h1>
     <ul class="nav">
-      <li class="navlink"><a href="#" data-micromodal-trigger="modal-1">About</a></li>
-      <li class="navlink"><a href="#" data-micromodal-trigger="modal-2">Contact</a></li>
-      <li class="navlink"><a href="#" data-micromodal-trigger="modal-3">Tracker</a></li>
+      <li class="navlink"><a href="#" data-micromodal-trigger="about-modal">About</a></li>
+      <li class="navlink"><a href="#" data-micromodal-trigger="contact-modal">Contact</a></li>
+      <li class="navlink"><a href="#" id="tracker-navlink">Tracker</a></li>
     </ul>
     <div class="burger">
       <i class="fas fa-bars"></i>
@@ -257,18 +267,17 @@
 
   <iframe id="map" src="" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
 
-  <!-- Add about and contact modals -->
-  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+  <div class="modal micromodal-slide" id="about-modal" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
         <header class="modal__header">
-          <h2 class="modal__title" id="modal-1-title">
+          <h2 class="modal__title" id="about-modal-title">
             About
           </h2>
           <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
         </header>
-        <main class="modal__content" id="modal-1-content">
-          <p id="modal-1-p">
+        <main class="modal__content" id="about-modal-content">
+          <p id="about-modal-p">
             This is a demo app, more details to come.
           </p>
         </main>
@@ -276,17 +285,17 @@
     </div>
   </div>
 
-  <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+  <div class="modal micromodal-slide" id="contact-modal" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-2-title">
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
         <header class="modal__header">
-          <h2 class="modal__title" id="modal-2-title">
+          <h2 class="modal__title" id="contact-modal-title">
             Contact
           </h2>
           <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
         </header>
-        <main class="modal__content" id="modal-2-content">
-          <p id="modal-2-p">
+        <main class="modal__content" id="contact-modal-content">
+          <p id="contact-modal-p">
             KC Erb made this: kc@kcerb.com
           </p>
         </main>
@@ -294,34 +303,108 @@
     </div>
   </div>
 
-  <div class="modal micromodal-slide" id="modal-3" aria-hidden="true">
+  <div class="modal micromodal-slide" id="start-tracking-modal" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-3-title">
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="start-tracking-modal-title">
         <header class="modal__header">
-          <h2 class="modal__title" id="modal-3-title">
+          <h2 class="modal__title" id="start-tracking-modal-title">
             Tracker
           </h2>
           <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
         </header>
-        <main class="modal__content" id="modal-3-content">
-          <p id="modal-3-p">
-            Still under development
+        <main class="modal__content" id="start-tracking-modal-content">
+          <p id="start-tracking-modal-p">
+            If you are the torch bearer, enter the code below and we'll start tracking you. Don't turn off your phone! Just leave
+            it open to this page as if it were playing a video.
           </p>
+          <input id="tracker-code-input" type="tel" pattern="[0-9]*" maxlength="6" />
         </main>
+        <footer class="modal__footer">
+          <button id="start-tracking-button" class="modal__btn modal__btn-primary">Track Me</button>
+        </footer>
       </div>
     </div>
   </div>
-  <!-- Add tracker modal, you click the button, it tracks you, it updates the write key so that the other dude can't keep writing to the source. -->
+
+  <div class="modal micromodal-slide" id="stop-tracking-modal" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="stop-tracking-modal-title">
+        <header class="modal__header">
+          <h2 class="modal__title" id="stop-tracking-modal-title">
+            Tracker
+          </h2>
+          <button class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+        </header>
+        <main class="modal__content" id="stop-tracking-modal-content">
+          <p id="stop-tracking-modal-p">
+            If you have passed the torch on to the next person, you may press this button to turn off tracking.
+          </p>
+        </main>
+        <footer class="modal__footer">
+          <button id="stop-tracking-button" class="modal__btn modal__btn-secondary">Stop Tracking Me</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+  
   <script>
+    const bucketId = '9rKmbjdtbS199u7qM1kxVR';
+    const bucketSecret = 'adminsecret';
+    let writeKey = ''
+    const debug = true;
+    let wakeLock = null; // handle to wakeLock instance for release
+    let trackingPermitted = false;
+    let weBeTrackin = false;
+    
     document.addEventListener('DOMContentLoaded', function() {
-      MicroModal.init();
+      debug && console.log('DOMContentLoaded');
+      MicroModal.init({
+        onShow: modal => console.info(`${modal.id} is shown`), // [1]
+        onClose: modal => console.info(`${modal.id} is hidden`), // [2]
+        debugMode: true
+      });
+      document.getElementById('start-tracking-button').onclick = async function (event) {
+        debug && console.log('start-tracking-button clicked');
+        const codeInput = document.getElementById('tracker-code-input');
+        if (codeInput.value === '20895') {
+          trackingPermitted = true;
+          MicroModal.close('start-tracking-modal');
+          const success = await updateWriteKey();
+          if (success) {
+            await initWakeLock();
+            trackMe();
+          }
+        } else {
+          alert("Sorry. That's not the right code!");
+        }
+      }
+      document.getElementById('tracker-navlink').onclick = function (event) {
+        debug && console.log('tracker-navlink clicked', weBeTrackin);
+        weBeTrackin ?
+        MicroModal.show('stop-tracking-modal')
+        :
+        MicroModal.show('start-tracking-modal');
+      }
+      document.getElementById('stop-tracking-button').onclick = async function (event) {
+        debug && console.log('stop-tracking-button clicked');
+        MicroModal.close('stop-tracking-modal');
+        trackingPermitted = false;
+        try {
+          await wakeLock.release();
+          debug && console.log('wakeLock is released!')
+        } catch (error) {
+          console.warn('failed to release wakeLock ....', error);
+        }
+      }
     }, false);
+    
     
     const burger = document.querySelector('.burger i');
     const nav = document.querySelector('.nav');
 
     // Defining a function
     function toggleNav() {
+        debug && console.log('toggleNav');
         burger.classList.toggle('fa-bars');
         burger.classList.toggle('fa-times');
         nav.classList.toggle('nav-active');
@@ -329,29 +412,121 @@
 
     // Calling the function after click event occurs
     burger.addEventListener('click', function() {
+        debug && console.log('burger clicked');
         toggleNav();
     });
 
-
     const seconds = 1000;
-    setInterval(updateCoords, 60*seconds);
-    updateCoords();
+    setInterval(readCoords, 60*seconds);
+    readCoords();
 
-    async function updateCoords() {
-      const resp = await fetch("https://kvdb.io/S7ZULor8q24RKtWCYH3gRx/coords");
-      let coords = await resp.text();
-      console.log("Request complete! response:", coords);
-      const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyDs2FAoj6O60yIRObq41VWeLrZOrXfQDuI&q=${coords}`;
-      document.getElementById('map').src = url;
+    async function readCoords() {
+      debug && console.log('readCoords');
+      try {
+        const resp = await fetch(`https://kvdb.io/${bucketId}/coords`);
+        if (resp.ok) {
+          let coords = await resp.text();
+          debug && console.log(resp.status, "Read coords: " + coords);
+          const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyDs2FAoj6O60yIRObq41VWeLrZOrXfQDuI&q=${coords}`;
+          document.getElementById('map').src = url;
+        } else {
+          debug && alert(resp.status + ' - readCoords NOT OK - ' + coords)
+          console.warn('readCoords NOT OK', resp);
+        }
+        
+      } catch (error) {
+        alert('Error in `readCoords`: ' + error.message);
+        console.error(error);
+      }
     }
 
-    async function trackMe() {
-      // fetch("https://kvdb.io/S7ZULor8q24RKtWCYH3gRx/coords", {
-      //   method: "POST", 
-      //   body: "39.063201,-77.091807"
-      // }).then(res => {
-      //   console.log("Request complete! response:", res);
-      // });
+    async function updateWriteKey() {
+      debug && console.log('updateWriteKey');
+      writeKey = Math.round(Math.random()*100000000);
+      try {
+        let resp = await fetch(`https://kvdb.io/${bucketId}`, {
+          body: `write_key=${writeKey}`,
+          headers: {
+            Authorization: `Basic ${btoa(bucketSecret + ':')}`,
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          method: "PATCH"
+        })
+        if (debug) {
+          let patchResponse = await resp.text();
+          console.log(resp.status, "PATCH write_key response: " + patchResponse);
+        }
+        if (resp.ok) {
+          return true;
+        } else {
+          debug && alert(resp.status + ' - updateWriteKey PATCH NOT OK - ' + patchResponse)
+          console.warn('updateWriteKey NOT OK', resp);
+        }
+      } catch (error) {
+        alert('Error in `updateWriteKey`: ' + error.message);
+        console.error(error);
+      }
+    }
+
+    function trackMe() {
+      debug && console.log('trackMe', trackingPermitted);
+      if (trackingPermitted) {
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+        navigator.geolocation.getCurrentPosition(updateCoords, geolocationError, options);
+      } else {
+        weBeTrackin = false;
+        debug && console.log('`trackMe` called, but tracking not permitted. Ending cycle.');
+      }
+    }
+
+    function geolocationError(err) {
+      alert('Error getting geolocation - ' + err.message);
+      console.error(err);
+    }
+
+    async function updateCoords(position) {
+      debug && console.log('updateCoords');
+      weBeTrackin = true;
+      let lat = position.coords.latitude;
+      let long = position.coords.longitude;
+      try {
+        const resp = await fetch(`https://kvdb.io/${bucketId}/coords`, {
+          body: `${lat},${long}`,
+          headers: {
+            Authorization: `Basic ${btoa(writeKey + ':')}`,
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          method: "POST"
+        })
+        if (debug) {
+          let postResponse = await resp.text();
+          console.log(resp.status, "Update coords post response: " + postResponse);
+        }
+        if (resp.ok) {
+          setTimeout(trackMe, 60*seconds);
+        } else {
+          debug && alert(resp.status + ' - updateCoords NOT OK - ' + postResponse)
+          console.warn('updateCoords NOT OK', resp);
+        }
+      } catch (error) {
+        alert('Error in `updateCoords`: ' + error.message);
+        console.error(error);
+      }
+    }
+
+    async function initWakeLock() {
+      // create an async function to request a wake lock
+      try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        debug && console.log('wake lock success');
+      } catch (error) {
+        debug && alert('Error in `initWakeLock`: ' + error.message);
+        console.error(error);
+      }
     }
   </script>  
 </body>
