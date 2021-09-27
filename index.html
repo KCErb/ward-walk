@@ -501,13 +501,9 @@ class NoSleep {
         debug && console.log('stop-tracking-button clicked');
         MicroModal.close('stop-tracking-modal');
         trackingPermitted = false;
-        try {
-          // await wakeLock.release();
-          noSleep.disable();
-          debug && console.log('no sleep enabled: ', noSleep.enabled);
-        } catch (error) {
-          console.warn('failed to release wakeLock ....', error);
-        }
+        // await wakeLock.release();
+        noSleep.disable();
+        debug && console.log('no sleep enabled: ', noSleep.enabled);
       }
     }, false);
     
@@ -565,10 +561,8 @@ class NoSleep {
           },
           method: "PATCH"
         })
-        if (debug) {
-          let patchResponse = await resp.text();
-          console.log(resp.status, "PATCH write_key response: " + patchResponse);
-        }
+        let patchResponse = await resp.text();
+        debug && console.log(resp.status, "PATCH write_key response: " + patchResponse);
         if (resp.ok) {
           return true;
         } else {
@@ -615,14 +609,17 @@ class NoSleep {
           },
           method: "POST"
         })
-        if (debug) {
-          let postResponse = await resp.text();
-          console.log(resp.status, "push coords post response: " + postResponse);
-        }
+        const postResponse = await resp.text();
+        debug && console.log(resp.status, "push coords post response: " + postResponse);
         if (resp.ok) {
           setTimeout(trackMe, 60*seconds);
+        } else if (trackingPermitted && resp.status === 401) {
+            trackingPermitted = false;
+            weBeTrackin = false;
+            noSleep.disable();
+            alert('Tracking disabled: A new torchbearer is now being tracked.');
         } else {
-          debug && alert(resp.status + ' - pushCoords NOT OK - ' + postResponse)
+          debug && alert(resp.status + ' - pushCoords NOT OK - ' + postResponse);
           console.warn('pushCoords NOT OK', resp);
         }
       } catch (error) {
