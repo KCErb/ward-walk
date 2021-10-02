@@ -785,7 +785,7 @@
   </div>
   <script>
     const bucketId = 'EcFfUBN8LePXpA22gy4JHE';
-    const debug = true;
+    const debug = false;
     let wakeLock = null; // handle to wakeLock instance for release
     let trackingPermitted = false;
     let weBeTrackin = false;
@@ -866,7 +866,7 @@
         const resp = await fetch(`https://kvdb.io/${bucketId}/${path}?q=${cacheBust}`);
         if (resp.ok) {
           let data = await resp.text();
-          debug && console.log(resp.status, `Read data (${path}): ` + data);
+          console.log(resp.status, `Read data (${path}): ` + data);
           showingMap ? updateMap(data) : updatePercentComplete(data);
         } else {
           debug && alert(resp.status + ` - readData NOT OK (${path}) - ` + data)
