@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
   <title>Ward Unity Walk</title>
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
 </head>
@@ -322,7 +321,7 @@
   </style>
   
   <header class="page-header">
-    <h1 class="logo">Ward Unity Walk</h1>
+    <h1 class="logo">Ward Walk</h1>
     <ul class="nav">
       <!-- <li class="navlink"><a href="#" data-micromodal-trigger="contact-modal">Contact</a></li> -->
       <!-- <li class="navlink"><a href="#" id="tracker-navlink">Tracker</a></li> -->
@@ -330,8 +329,9 @@
       <li class="navlink toggle-content" id="schedule-link"><a href="#">Schedule</a></li>
       <li class="navlink"><a href="#" data-micromodal-trigger="about-modal">About</a></li>
     </ul>
-    <div class="burger">
-      <i class="fas fa-bars"></i>
+    <div id="burger" class="burger">
+      <svg id="close" style="display: none;" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#ccc"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      <svg id="bars" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#ccc"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
   </header>
 
@@ -468,15 +468,12 @@
       style="font-size:4.23333px;stroke-width:0.264583"
       x="90.485283"
       y="289.3848">Cedar Ln</tspan></text>
-    <rect style="fill:white;stroke-width:2px;stroke:black;" x="105" y="50" width="68" height="30"></rect>
+    <rect style="fill:white;stroke-width:2px;stroke:black;" x="105" y="50" width="68" height="22"></rect>
     <text x="110" y="60" style="font-size: 4pt">
-      <tspan style="fill:hsl(216, 76%, 51%);">Blue dot</tspan><tspan> will update</tspan>
+      <tspan style="fill:hsl(216, 76%, 51%);">Blue dot</tspan><tspan> gives live</tspan>
     </text>
     <text x="110" y="65" style="font-size: 4pt">
-      <tspan>live as it tracks the group</tspan>
-    </text>
-    <text x="110" y="70" style="font-size: 4pt">
-      <tspan>on Saturday morning.</tspan>
+      <tspan>position of torch bearer.</tspan>
     </text>
     <g
     id="g4850"
@@ -659,7 +656,10 @@
       </circle>
       <text x="169.72" y="269.146" style="stroke:black;font-size:5.23333px" text-anchor="middle" stroke="#51c5cf" stroke-width="0.5" dy=".3em">7</text>
       <!-- marker -->
-      <circle r="2.2" cy="0" cx="0" id="marker" style="fill: #0c4498" />
+      <g id="marker">
+        <circle id="pulse" r="2.2" cy="0" cx="0" />
+        <circle id="dot" r="2.2" cy="0" cx="0"  style="fill: #0c4498" />
+      </g>
     </svg>
     <div style="margin: 0 5px;">
       <div class="waypoint-block">
@@ -783,189 +783,66 @@
     </div>
   </div>
   <script>
-    // NO SLEEP ... use folding to skip
-    const media = {
-      webm: "data:video/webm;base64,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",
-      mp4: "data:video/mp4;base64,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",
-    };
-    const { webm, mp4 } = media;
-
-// Detect iOS browsers < version 10
-const oldIOS = () =>
-  typeof navigator !== "undefined" &&
-  parseFloat(
-    (
-      "" +
-      (/CPU.*OS ([0-9_]{3,4})[0-9_]{0,1}|(CPU like).*AppleWebKit.*Mobile/i.exec(
-        navigator.userAgent
-      ) || [0, ""])[1]
-    )
-      .replace("undefined", "3_2")
-      .replace("_", ".")
-      .replace("_", "")
-  ) < 10 &&
-  !window.MSStream;
-
-class NoSleep {
-  constructor() {
-    this.enabled = false;
-    if (oldIOS()) {
-      this.noSleepTimer = null;
-    } else {
-      // Set up no sleep video element
-      this.noSleepVideo = document.createElement("video");
-
-      this.noSleepVideo.setAttribute("title", "No Sleep");
-      this.noSleepVideo.setAttribute("playsinline", "");
-
-      this._addSourceToVideo(this.noSleepVideo, "webm", webm);
-      this._addSourceToVideo(this.noSleepVideo, "mp4", mp4);
-
-      this.noSleepVideo.addEventListener("loadedmetadata", () => {
-        if (this.noSleepVideo.duration <= 1) {
-          // webm source
-          this.noSleepVideo.setAttribute("loop", "");
-        } else {
-          // mp4 source
-          this.noSleepVideo.addEventListener("timeupdate", () => {
-            if (this.noSleepVideo.currentTime > 0.5) {
-              this.noSleepVideo.currentTime = Math.random();
-            }
-          });
-        }
-      });
-    }
-  }
-
-  _addSourceToVideo(element, type, dataURI) {
-    var source = document.createElement("source");
-    source.src = dataURI;
-    source.type = `video/${type}`;
-    element.appendChild(source);
-  }
-
-  get isEnabled() {
-    return this.enabled;
-  }
-
-  enable() {
-    if (oldIOS()) {
-      this.disable();
-      console.warn(`
-        NoSleep enabled for older iOS devices. This can interrupt
-        active or long-running network requests from completing successfully.
-        See https://github.com/richtr/NoSleep.js/issues/15 for more details.
-      `);
-      this.noSleepTimer = window.setInterval(() => {
-        if (!document.hidden) {
-          window.location.href = window.location.href.split("#")[0];
-          window.setTimeout(window.stop, 0);
-        }
-      }, 15000);
-      this.enabled = true;
-      return Promise.resolve();
-    } else {
-      let playPromise = this.noSleepVideo.play();
-      return playPromise
-        .then((res) => {
-          this.enabled = true;
-          return res;
-        })
-        .catch((err) => {
-          this.enabled = false;
-          throw err;
-        });
-    }
-  }
-
-  disable() {
-    if (oldIOS()) {
-      if (this.noSleepTimer) {
-        console.warn(`
-          NoSleep now disabled for older iOS devices.
-        `);
-        window.clearInterval(this.noSleepTimer);
-        this.noSleepTimer = null;
-      }
-    } else {
-      this.noSleepVideo.pause();
-    }
-    this.enabled = false;
-  }
-}
-  </script>
-  <script>
-    const bucketId = '9rKmbjdtbS199u7qM1kxVR';
-    const bucketSecret = 'adminsecret';
-    let writeKey = '';
+    const bucketId = 'EcFfUBN8LePXpA22gy4JHE';
     const debug = true;
     let wakeLock = null; // handle to wakeLock instance for release
     let trackingPermitted = false;
     let weBeTrackin = false;
-    const noSleep = new NoSleep();
+    let showingMap = false;
+
+    // HOIST
+    let marker;
+    let curve;
+    let totalLength;
+    let dot;
+    let pulse;
     
     document.addEventListener('DOMContentLoaded', function() {
       debug && console.log('DOMContentLoaded');
-      MicroModal.init({
-        onShow: modal => console.info(`${modal.id} is shown`), // [1]
-        onClose: modal => console.info(`${modal.id} is hidden`), // [2]
-        debugMode: true
-      });
-      // <li class="navlink"><a href="#" id="map-link">Map</a></li>
-      // <li class="navlink"><a href="#" id="schedule-link">Schedule</a></li>
+      MicroModal.init();
       const mapLink = document.getElementById('map-link');
       const map = document.getElementById('map');
       const scheduleLink = document.getElementById('schedule-link');
       const schedule = document.getElementById('schedule');
+      
+      marker = document.getElementById('marker');
+      curve = document.getElementById('curve');
+      dot = document.getElementById('dot');
+      pulse = document.getElementById('pulse');
+      totalLength = curve.getTotalLength();
+      
       mapLink.onclick = toggleView;
       scheduleLink.onclick = toggleView;
 
       function toggleView(event) {
+        showingMap = !showingMap;
         [map, schedule, mapLink, scheduleLink].forEach( elem => {
           elem.classList.toggle('is-visible');
         })
+        readData();
       }
-      // document.getElementById('start-tracking-button').onclick = async function (event) {
-      //   debug && console.log('start-tracking-button clicked');
-      //   const codeInput = document.getElementById('tracker-code-input');
-      //   if (codeInput.value === '20895') {
-      //     trackingPermitted = true;
-      //     MicroModal.close('start-tracking-modal');
-      //     const success = await updateWriteKey();
-      //     if (success) {
-      //       await initWakeLock();
-      //       trackMe();
-      //     }
-      //   } else {
-      //     alert("Sorry. That's not the right code!");
-      //   }
-      // }
-      // document.getElementById('tracker-navlink').onclick = function (event) {
-      //   debug && console.log('tracker-navlink clicked', weBeTrackin);
-      //   weBeTrackin ?
-      //   MicroModal.show('stop-tracking-modal')
-      //   :
-      //   MicroModal.show('start-tracking-modal');
-      // }
-      // document.getElementById('stop-tracking-button').onclick = async function (event) {
-      //   debug && console.log('stop-tracking-button clicked');
-      //   MicroModal.close('stop-tracking-modal');
-      //   trackingPermitted = false;
-      //   // await wakeLock.release();
-      //   noSleep.disable();
-      //   debug && console.log('no sleep enabled: ', noSleep.enabled);
-      // }
     }, false);
     
     
-    const burger = document.querySelector('.burger i');
+    const burgerBars = document.getElementById('bars');
+    const burgerClose = document.getElementById('close');
     const nav = document.querySelector('.nav');
+    const burger = document.getElementById('burger');
+    let burgerBarsVisible = true;
 
     // Defining a function
     function toggleNav() {
         debug && console.log('toggleNav');
-        burger.classList.toggle('fa-bars');
-        burger.classList.toggle('fa-times');
+        if (burgerBarsVisible) {
+          burgerClose.style = "display: block;"
+          burgerBars.style = "display: none;"
+          burgerBarsVisible = false;
+        } else {
+          burgerBars.style = "display: block;"
+          burgerClose.style = "display: none;"
+          burgerBarsVisible = true;
+        }
+
         nav.classList.toggle('nav-active');
     }
 
@@ -976,167 +853,66 @@ class NoSleep {
     });
 
     const seconds = 1000;
-    setInterval(readCoords, 60*seconds);
-    readCoords();
+    setInterval(readData, 30*seconds);
+    readData();
+    setInterval(pulseMarker, 100);
 
-    async function readCoords() {
-      debug && console.log('readCoords');
+    async function readData() {
+      debug && console.log('readData');
+      const path = showingMap ? 'coords' : 'percentComplete'
       try {
-        const resp = await fetch(`https://kvdb.io/${bucketId}/coords`);
+        const resp = await fetch(`https://kvdb.io/${bucketId}/${path}`);
         if (resp.ok) {
-          let coords = await resp.text();
-          debug && console.log(resp.status, "Read coords: " + coords);
-          const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyDs2FAoj6O60yIRObq41VWeLrZOrXfQDuI&q=${coords}`;
-          document.getElementById('map').src = url;
+          let data = await resp.text();
+          debug && console.log(resp.status, `Read data (${path}): ` + data);
+          showingMap ? updateMap(data) : updatePercentComplete(data);
         } else {
-          debug && alert(resp.status + ' - readCoords NOT OK - ' + coords)
-          console.warn('readCoords NOT OK', resp);
-        }
-        
-      } catch (error) {
-        alert('Error in `readCoords`: ' + error.message);
-        console.error(error);
-      }
-    }
-
-    async function updateWriteKey() {
-      debug && console.log('updateWriteKey');
-      writeKey = Math.round(Math.random()*100000000);
-      try {
-        let resp = await fetch(`https://kvdb.io/${bucketId}`, {
-          body: `write_key=${writeKey}`,
-          headers: {
-            Authorization: `Basic ${btoa(bucketSecret + ':')}`,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          method: "PATCH"
-        })
-        let patchResponse = await resp.text();
-        debug && console.log(resp.status, "PATCH write_key response: " + patchResponse);
-        if (resp.ok) {
-          return true;
-        } else {
-          debug && alert(resp.status + ' - updateWriteKey PATCH NOT OK - ' + patchResponse)
-          console.warn('updateWriteKey NOT OK', resp);
+          debug && alert(resp.status + ` - readData NOT OK (${path}) - ` + data)
+          console.warn(`readData NOT OK (path: ${path}`, resp);
         }
       } catch (error) {
-        alert('Error in `updateWriteKey`: ' + error.message);
+        alert('Error in `readData`: ' + error.message);
         console.error(error);
       }
     }
 
-    function trackMe() {
-      debug && console.log('trackMe', trackingPermitted);
-      if (trackingPermitted) {
-        const options = {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
-        };
-        navigator.geolocation.getCurrentPosition(pushCoords, geolocationError, options);
-      } else {
-        weBeTrackin = false;
-        debug && console.log('`trackMe` called, but tracking not permitted. Ending cycle.');
-      }
+    function updateMap(coords) {
+      debug && console.log('Updating map ', coords);
+      const url = `https://www.google.com/maps/embed/v1/place?key=AIzaSyDs2FAoj6O60yIRObq41VWeLrZOrXfQDuI&q=${coords}`;
+      document.getElementById('map').src = url;
     }
 
-    function geolocationError(err) {
-      alert('Error getting geolocation - ' + err.message);
-      console.error(err);
-    }
-
-    async function pushCoords(position) {
-      debug && console.log('pushCoords');
-      weBeTrackin = true;
-      let lat = position.coords.latitude;
-      let long = position.coords.longitude;
-      try {
-        const resp = await fetch(`https://kvdb.io/${bucketId}/coords`, {
-          body: `${lat},${long}`,
-          headers: {
-            Authorization: `Basic ${btoa(writeKey + ':')}`,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          method: "POST"
-        })
-        const postResponse = await resp.text();
-        debug && console.log(resp.status, "push coords post response: " + postResponse);
-        if (resp.ok) {
-          setTimeout(trackMe, 60*seconds);
-        } else if (trackingPermitted && resp.status === 401) {
-            trackingPermitted = false;
-            weBeTrackin = false;
-            noSleep.disable();
-            alert('Tracking disabled: A new torchbearer is now being tracked.');
-        } else {
-          debug && alert(resp.status + ' - pushCoords NOT OK - ' + postResponse);
-          console.warn('pushCoords NOT OK', resp);
-        }
-      } catch (error) {
-        alert('Error in `pushCoords`: ' + error.message);
-        console.error(error);
-      }
-    }
-
-    async function initWakeLock() {
-      // create an async function to request a wake lock
-      try {
-        // Y U NO work?
-        // wakeLock = await navigator.wakeLock.request('screen');
-        await noSleep.enable();
-        debug && console.log('no sleep enabled: ', noSleep.enabled);
-      } catch (error) {
-        debug && alert('Error in `initWakeLock`: ' + error.message);
-        console.error(error);
-      }
-    }
-    function latLong2XY (lat, long) {
-      // -77.12794 => 34.2923 (both increase together)
-      const scaleX = 2106.692467
-      const shiftX = 162519.157217
-      const x = long * scaleX + shiftX;
-      // 39.115012 => 2.76919 (opposite directions)
-      const scaleY = -2715.889993
-      const shiftY = 106234.838859
-      const y = lat * scaleY + shiftY;
-      return {x, y};
-    }
-
-    const numPoints = 500;
-    const marker = document.getElementById('marker');
-    const curve = document.getElementById('curve');
-    const totalLength = curve.getTotalLength();
-    // let xyPercent = [];
-    // for (let i = 0; i < numPoints; i++) {
-    //   let percentComplete = i/numPoints;
-    //   let p = curve.getPointAtLength(percentComplete * totalLength);
-    //   xyPercent.push({x: p.x, y: p.y, percentComplete});
-    // }
-    
-    // find closest point in set to current converted lat, long
-    // const [lat, long] = [39.0250567412785, -77.09914596507002];
-    // const { x, y } = latLong2XY(lat, long);
-    // let min = Infinity;
-    // let percentComplete = 0;
-    // xyPercent.forEach( candidate => {
-    //   const diffX = candidate.x - x;
-    //   const diffY = candidate.y - y;
-    //   const distance = Math.sqrt(diffX*diffX + diffY*diffY);
-    //   if (distance < min) {
-    //     min = distance;
-    //     percentComplete = candidate.percentComplete;
-    //   }
-    // })
-    let percentComplete = 0;
-    setInterval(function(){
+    function updatePercentComplete(percentCompleteString) {
+      debug && console.log('Updating percent complete ', percentCompleteString);
+      const percentComplete = parseFloat(percentCompleteString);
+      // const percentComplete = 0.5
       let p = curve.getPointAtLength(percentComplete * totalLength);
+      // the curve we are tracing is beneath the curve we see and is translated away from it ... no time.
       p.x += 1.8;
       p.y += -0.4;
       marker.setAttribute("transform", `translate(${p.x}, ${p.y})`);
-      percentComplete += 0.001;
-      if (percentComplete >= 1) percentComplete = 0;
-    },100)
-    
+    }
+
+    let markerRadius = 2.2;
+    let markerGrowShrinkFactor = 0.96;
+    let pulseRadius = 2.2;
+    let pulseGrowthFactor = 1.1;
+    let pulseOpacity = 1;
+    let pulseOpacityFactor = 0.05;
+    function pulseMarker() {
+      dot.setAttribute("r", markerRadius);
+      pulse.setAttribute("r", pulseRadius);
+      pulse.setAttribute("style", `fill:rgba(200, 200, 255, ${pulseOpacity})`);
+      markerRadius *= markerGrowShrinkFactor;
+      pulseRadius *= pulseGrowthFactor;
+      pulseOpacity -= pulseOpacityFactor;
+      if (markerRadius < 1.9) markerGrowShrinkFactor = 1.03;
+      if (markerRadius > 2.5) markerGrowShrinkFactor = 0.97;
+      if (pulseRadius > 10) {
+        pulseRadius = 2.2;
+        pulseOpacity = 1;
+      }
+    }
   </script>
 </body>
 </html>
