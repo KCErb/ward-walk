@@ -862,7 +862,8 @@
       debug && console.log('readData');
       const path = showingMap ? 'coords' : 'percentComplete'
       try {
-        const resp = await fetch(`https://kvdb.io/${bucketId}/${path}`);
+        const cacheBust = Math.round(Math.random()*100000);
+        const resp = await fetch(`https://kvdb.io/${bucketId}/${path}?q=${cacheBust}`);
         if (resp.ok) {
           let data = await resp.text();
           debug && console.log(resp.status, `Read data (${path}): ` + data);
